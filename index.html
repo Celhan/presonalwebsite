@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <!-- ===== META & TITLE ===== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paul Stevefanus — Personal Site</title>
+
+  <!-- ===== FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ===== GLOBAL STYLES ===== -->
+  <style>
+    :root{
+      --dark:#0b0b0d;
+      --light:#ffffff;
+      --text:#222;
+      --muted:#6b7280;
+      --accent:#2f80ed;
+      --accent2:#6a11cb;
+      --bg:#fafafa;
+      --card:#ffffff;
+      --glass: rgba(255,255,255,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+    *{ box-sizing:border-box }
+    html,body{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family:'Montserrat', Arial, sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.6;
+    }
+    img{ max-width:100%; display:block }
+
+    /* ===== UTIL ===== */
+    .container{ max-width:1140px; margin:0 auto; padding:0 20px }
+    .btn{
+      display:inline-block;
+      padding:.9rem 1.2rem;
+      font-weight:700;
+      color:#fff; text-decoration:none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius:12px;
+      box-shadow: 0 10px 24px rgba(47,128,237,.35);
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px rgba(47,128,237,.45); filter:saturate(1.05) }
+
+    /* ===== NAVBAR (Dynamic Island) ===== */
+    .navbar{
+      position: fixed; top: 18px; left:50%; transform:translateX(-50%);
+      background:#000; color:#fff; border-radius:50px;
+      padding:10px 26px; z-index:10000; box-shadow:var(--shadow);
+      display:flex; align-items:center; justify-content:center;
+      transition: all .6s cubic-bezier(.68,-0.55,.27,1.55);
+      max-width:92vw; overflow:hidden; cursor:pointer; user-select:none;
+    }
+    .navbar-menu{ display:flex; gap:20px; white-space:nowrap; transition: opacity .35s ease }
+    .navbar-menu span{ position:relative; font-weight:600; font-size:.95rem; opacity:.95 }
+    .navbar-menu span:hover{ opacity:1 }
+    .navbar-menu span.active::after{
+      content:""; position:absolute; left:50%; transform:translateX(-50%);
+      bottom:-6px; width:56%; height:2px; background:#fff; border-radius:2px;
+    }
+    .circle{ width:60px; height:60px; padding:0; border-radius:50% }
+    .circle .navbar-menu{ opacity:0; pointer-events:none }
+
+    @keyframes bounceDown{
+      0%{ transform: translate(-50%,0) }
+      30%{ transform: translate(-50%,40px) }
+      50%{ transform: translate(-50%,0) }
+      70%{ transform: translate(-50%,20px) }
+      85%{ transform: translate(-50%,0) }
+      95%{ transform: translate(-50%,10px) }
+      100%{ transform: translate(-50%,0) }
+    }
+
+    @media (max-width:640px){
+      .navbar{ top:10px }
+      .navbar-menu{ gap:12px; font-size:14px }
+    }
+ 
+    /* ===== HERO (Parallax Multi-layer) ===== */
+    .hero {
+    position: relative;
+    min-height: 100vh; /* dari 92vh jadi full */
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    overflow: hidden;
+    margin-top: 0; /* buang jarak atasnya */
+}
+    .hero__layer{ position:absolute; inset:0; will-change:transform }
+    .hero__bg{
+      background-image:url(HEROBG.jpg);
+      background-size:cover; background-position:center; transform:scale(1.1);
+      filter:saturate(1.05) contrast(1.05);
+    }
+    .hero__overlay{
+      background:
+        radial-gradient(60% 60% at 70% 30%, rgba(0,0,0,.15) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.55) 80%, rgba(0,0,0,.85) 100%);
+      pointer-events:none;
+    }
+    .hero__float{
+      pointer-events:none; mix-blend-mode:screen; filter:blur(2px);
+      background: radial-gradient(50% 50% at 50% 50%, rgba(47,128,237,.55), rgba(47,128,237,0) 60%);
+      width:38vmin; height:38vmin; border-radius:50%;
+      position:absolute; top:15%; left:10%; animation: float 12s ease-in-out infinite;
+    }
+    .hero__float--2{ top:62%; right:8%; left:auto; width:26vmin; height:26vmin; animation-duration:14s }
+    .hero__float--3{ top:22%; left:64%; width:20vmin; height:20vmin; animation-duration:16s }
+
+    @keyframes float{
+      0%{ transform:translate3d(0,0,0) scale(1); opacity:.9 }
+      50%{ transform:translate3d(0,-18px,0) scale(1.05); opacity:.75 }
+      100%{ transform:translate3d(0,0,0) scale(1); opacity:.9 }
+    }
+
+    .hero__content{ position:relative; z-index:2; text-align:center; padding:0 20px; backdrop-filter:blur(2px); animation: fadeUp .9s ease .15s both }
+    .hero__title{ font-size: clamp(2rem, 4.5vw, 4rem); line-height:1.1; margin:0 0 .35rem; letter-spacing:.4px; font-weight:800; text-shadow: 0 10px 30px rgba(0,0,0,.45) }
+    .hero__subtitle{ font-size: clamp(1rem, 2.2vw, 1.25rem); opacity:.95; margin:.25rem 0 1rem }
+    .hero__badges{ display:inline-flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.15rem }
+    .hero__badges span{
+      padding:.35rem .6rem; border:1px solid rgba(255,255,255,.35); border-radius:999px;
+      background:rgba(255,255,255,.08); backdrop-filter:blur(6px); font-size:.9rem;
+    }
+    .hero__scroll{
+      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+      width:34px; height:54px; border-radius:22px; border:2px solid rgba(255,255,255,.7);
+      display:grid; place-items:center; opacity:.85; z-index:2; background:transparent;
+    }
+    .hero__wheel{ width:4px; height:10px; border-radius:2px; background:#fff; animation: wheel 1.8s ease-in-out infinite }
+    @keyframes wheel{ 0%{ transform:translateY(-8px); opacity:0 } 40%{ opacity:1 } 100%{ transform:translateY(10px); opacity:0 } }
+    @keyframes fadeUp{ from{ opacity:0; transform:translate3d(0,18px,0) } to{ opacity:1; transform:translate3d(0,0,0) } }
+
+    /* ===== SECTION BASE ===== */
+    section{ scroll-margin-top:110px }
+    .section-title{ text-align:center; margin:0 0 10px; font-size:clamp(1.6rem, 2.6vw, 2.2rem) }
+    .section-sub{ text-align:center; color:var(--muted); margin:0 auto 26px; max-width:700px; font-size:.98rem }
+
+    /* ===== ABOUT ===== */
+    .about{ padding:80px 0 }
+    .about-wrap{ display:flex; flex-wrap:wrap; gap:34px; align-items:center }
+    .about-text{ flex:1 1 520px }
+    .about-text p{ margin:0 0 14px }
+    .about-photo{ flex:1 1 320px; display:grid; place-items:center }
+    .about-photo img{
+      width:100%; max-width:360px; border-radius:16px; box-shadow:var(--shadow);
+      transform: translateZ(0);
+    }
+    .about-actions{ margin-top:14px }
+    .btn--ghost{
+      display:inline-block; margin-left:10px; padding:.9rem 1.2rem;
+      border-radius:12px; font-weight:700; text-decoration:none;
+      color:#000; background:#fff; border:1px solid #e5e7eb;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .btn--ghost:hover{ transform:translateY(-2px); box-shadow:var(--shadow) }
+
+    /* ===== POPUP (Vision / Mission / Core Values) ===== */
+    .popup{ position:fixed; inset:0; background:rgba(0,0,0,.8); display:none;
+      align-items:center; justify-content:center; z-index:10001; padding:20px }
+    .popup__content{
+      background:#fff; max-width:680px; width:100%; border-radius:16px; padding:22px 22px 10px;
+      overflow-y:auto; max-height:84vh; box-shadow:var(--shadow); animation: pop .25s ease both
+    }
+    .popup__content h3{ margin:.4rem 0 .3rem }
+    .popup__close{ float:right; font-size:22px; color:#e11d48; cursor:pointer; font-weight:800 }
+    @keyframes pop{ from{ transform:translateY(10px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+
+    /* ===== WHAT PEOPLE SAY (Testimonials) ===== */
+    .tms{ background:#f7f7f7; padding:70px 0 }
+    .tms-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px }
+    .tm{
+      background:#fff; border-radius:14px; padding:20px; box-shadow:var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease; opacity:0; transform:translateY(16px);
+    }
+    .tm.visible{ opacity:1; transform:translateY(0) }
+    .tm:hover{ transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.18) }
+    .tm-head{ display:flex; gap:12px; align-items:center; margin-bottom:10px }
+    .tm-head img{ width:64px; height:64px; border-radius:50%; object-fit:cover }
+    .tm-name{ margin:0; font-weight:700 }
+    .tm-role{ margin:0; color:var(--muted); font-size:.9rem }
+
+    /* ===== ELITE TEAM ===== */
+    .team{ padding:80px 0 }
+    .team-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px }
+    .member{
+      background:#fff; border-radius:14px; overflow:hidden; box-shadow:var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .member:hover{ transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.18) }
+    .member img{ width:100%; height:240px; object-fit:cover }
+    .member-body{ padding:14px 16px }
+    .member-name{ margin:0 0 6px; font-weight:800 }
+    .member-role{ margin:0; color:var(--muted); font-size:.95rem }
+
+    /* ===== AWARDS (Gallery) ===== */
+    .awards{ background:#f7f7f7; padding:70px 0 }
+    .grid-awards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px }
+    .grid-awards img{
+      width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px;
+      transition: transform .25s ease, box-shadow .25s ease; box-shadow: 0 4px 12px rgba(0,0,0,.08)
+    }
+    .grid-awards img:hover{ transform:scale(1.08); box-shadow: 0 14px 30px rgba(0,0,0,.18) }
+
+    /* ===== SERVICES ===== */
+    .services{ padding:80px 0 }
+    .svc-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px }
+    .svc{
+      display:flex; flex-direction:column; background:#fff; border-radius:14px; overflow:hidden;
+      box-shadow:var(--shadow); transition: transform .25s ease, box-shadow .25s ease; opacity:0; transform:translateY(16px)
+    }
+    .svc.visible{ opacity:1; transform:translateY(0) }
+    .svc:hover{ transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.18) }
+    .svc img{ width:100%; height:200px; object-fit:cover }
+    .svc-body{ padding:16px; display:flex; flex-direction:column; gap:10px; flex:1 }
+    .svc-body h3{ margin:0 }
+    .svc-body p{ margin:0 }
+    .svc .btn{ margin-top:auto; align-self:flex-start }
+
+    /* ===== CONTACT ===== */
+    .contact{ background:#0f172a; color:#e5e7eb; padding:70px 0 }
+    .contact-wrap{ display:grid; grid-template-columns:1.1fr .9fr; gap:24px }
+    .contact-card{
+      background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; padding:18px; box-shadow: 0 10px 24px rgba(0,0,0,.25)
+    }
+    .contact-card h4{ margin:0 0 10px; color:#fff }
+    .contact small{ color:#a8b0bb }
+    .form{ display:grid; gap:12px }
+    .input, textarea{
+      width:100%; padding:12px 14px; border-radius:10px; border:1px solid #334155;
+      background:#0b1220; color:#fff; outline:none;
+    }
+    .input:focus, textarea:focus{ border-color:#475569 }
+    textarea{ min-height:120px; resize:vertical }
+
+    /* ===== FOOTER ===== */
+    .footer{ background:#0b0b0d; color:#9ca3af; text-align:center; padding:24px 12px; font-size:.95rem }
+
+    /* ===== FADE-IN UTILS ===== */
+    .fade-in{ opacity:0; transform:translateY(18px); transition: opacity .8s ease, transform .8s ease }
+    .fade-in.visible{ opacity:1; transform:translateY(0) }
+
+    /* Mobile tweaks */
+    @media (max-width:900px){
+      .contact-wrap{ grid-template-columns:1fr }
+    }
+    @media (max-width:768px){
+      .hero{ min-height:86vh; margin-top:86px }
+      .hero__bg{ background-attachment: scroll }
+    }
+    .awards-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 15px;
+  padding: 0 20px;
+}
+.awards-gallery img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.awards-gallery img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+/* ===== LIGHTBOX UNTUK AWARD GALLERY ===== */
+.lightbox{
+  position:fixed; inset:0; display:none; place-items:center;
+  background:rgba(0,0,0,.85); z-index:10050; padding:20px;
+}
+.lightbox.open{ display:grid }
+.lightbox__imgwrap{ position:relative; max-width:min(92vw,1400px); max-height:88vh }
+.lightbox__img{
+  max-width:100%; max-height:88vh; display:block; border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5)
+}
+.lightbox__close, .lightbox__nav{
+  position:absolute; top:10px; background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22); color:#fff; font-weight:800;
+  border-radius:999px; width:42px; height:42px; display:grid; place-items:center;
+  cursor:pointer; user-select:none; backdrop-filter: blur(6px);
+}
+.lightbox__close{ right:10px }
+.lightbox__nav{ top:50%; transform:translateY(-50%) }
+.lightbox__prev{ left:-56px }
+.lightbox__next{ right:-56px }
+@media (max-width:640px){
+  .lightbox__prev{ left:6px } .lightbox__next{ right:6px }
+}
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR (Dynamic Island) ===== -->
+  <nav class="navbar circle" id="navbar">
+    <div class="navbar-menu">
+      <span class="active" data-target="home">Home</span>
+      <span data-target="about">About</span>
+      <span data-target="services">Services</span>
+      <span data-target="team">Elite Team</span>
+      <span data-target="awards">Awards</span>
+    </div>
+  </nav>
+
+  <!-- ===== HERO / PARALLAX ===== -->
+  <header id="home" class="hero">
+    <!-- Layers -->
+    <div class="hero__bg hero__layer" data-depth="0.15"></div>
+    <div class="hero__overlay hero__layer" data-depth="0"></div>
+    <div class="hero__float hero__layer" data-depth="0.35"></div>
+    <div class="hero__float hero__layer hero__float--2" data-depth="0.28"></div>
+    <div class="hero__float hero__layer hero__float--3" data-depth="0.22"></div>
+
+    <!-- Content -->
+    <div class="hero__content">
+      <h1 class="hero__title">Paul Stevefanus</h1>
+      <p class="hero__subtitle">Financial Educator • Risk Management Specialist • Wealth Preservation Specialist • Asset Allocation Specialist • Money Management Specialist</p>
+      <div class="hero__badges">
+        <span>SE</span><span>CFP®</span><span>AEPP®</span><span>CHT</span>
+      </div>
+      <a href="#about" class="btn">Explore About</a>
+    </div>
+
+    <!-- Scroll Cue -->
+    <button class="hero__scroll" aria-label="Scroll to About"
+      onclick="document.querySelector('#about').scrollIntoView({behavior:'smooth'})">
+      <span class="hero__wheel"></span>
+    </button>
+  </header>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2 class="section-title fade-in">About</h2>
+      <p class="section-sub fade-in">Paul Stevefanus</p>
+
+      <div class="about-wrap">
+        <div class="about-text fade-in">
+          <p>Paul Stevefanus adalah seorang praktisi di bidang keuangan. Paul menyelesaikan gelar sarjananya di Universitas Surabaya Fakultas Ekonomi jurusan Akuntansi.</p>
+          <p>Paul memulai bisnisnya di bidang keuangan sejak tahun 2005 dengan bergabung di salah satu jasa keuangan dari Amerika. Untuk menunjang bisnisnya, Paul mengambil pendidikan di Universitas Pelita Harapan Surabaya untuk mendapatkan spesialisasi di bidang keuangan dan berhasil menyandang gelar CFP (Certified Financial Planner) yang bertaraf internasional.</p>
+          <p>Agar dapat melayani nasabah dengan lebih baik, berbagai macam seminar dan kelas spesialis diambil hingga Paul dapat menyandang gelar QWP (Qualified Wealth Planner) dan AWP (Associate Wealth Planner).</p>
+          <div class="about-actions">
+            <a href="javascript:void(0)" class="btn" onclick="openPopup()">Vision • Mission • Core Values</a>
+            <a href="#services" class="btn--ghost">Layanan</a>
+          </div>
+        </div>
+        <div class="about-photo fade-in">
+          <img src="foto pak paul.jpg" alt="Foto Paul">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== POPUP Vision/Mission/Core Values ===== -->
+  <div class="popup" id="popup">
+    <div class="popup__content">
+      <span class="popup__close" onclick="closePopup()">&times;</span>
+      <h3>My Vision</h3>
+      <p>Menjadi berkat buat semua orang melalui perencanaan keuangan yang terpercaya dan profesional.</p>
+      <h3>My Mission</h3>
+      <p>Berkomitmen membantu setiap orang mencapai impian dan menciptakan masa depan yang lebih sejahtera.</p>
+      <h3>My Core Value — “WILL TRUST”</h3>
+      <ul>
+        <li>---------------------------- <b>T</b>eamwork</li>
+        <li><b>W</b>ork Hard & Smart - <b>R</b>eliable</li>
+         <li><b>I</b>ntegrity ---------------- <b>U</b>nity</li>
+          <li><b>L</b>ove God --------------- <b>S</b>pirit</li>
+           <li><b>L</b>eadership ------------- <b>T</b>rustworthy</li>
+           
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== WHAT PEOPLE SAY ===== -->
+  <section class="tms" id="testimonials">
+    <div class="container">
+      <h2 class="section-title fade-in">What People Say</h2>
+      <p class="section-sub fade-in"></p>
+
+      <div class="tms-grid">
+        <!-- 1 -->
+        <article class="tm fade-in">
+          <div class="tm-head">
+            <img src="WPS1.avif" alt="Andrei">
+            <div>
+              <p class="tm-name">Andrei</p>
+              <p class="tm-role">Pengusaha Muda</p>
+            </div>
+          </div>
+          <p>“Saya tahu betul bagaimana perjalanan sukses Pak Paul di bidang keuangan mulai dari nol. Terus maju dan berinovasi dengan semangat pantang menyerah dan berjiwa melayani. Sukses terus Pak Paul. Tuhan memberkati.”</p>
+        </article>
+        <!-- 2 -->
+        <article class="tm fade-in">
+          <div class="tm-head">
+            <img src="WPS2.avif" alt="San San">
+            <div>
+              <p class="tm-name">San San</p>
+              <p class="tm-role">Praktisi Keuangan</p>
+            </div>
+          </div>
+          <p>“Bapak Paul adalah seorang leader yang berpengalaman. Beliau membimbing timnya secara telaten dan memberi motivasi yang kuat untuk mencapai impian kami semua. Terima kasih Bapak Paul semoga tercapai semua impian dan cita-citanya, Amin.”</p>
+        </article>
+        <!-- 3 -->
+        <article class="tm fade-in">
+          <div class="tm-head">
+            <img src="WPS3.avif" alt="Allan">
+            <div>
+              <p class="tm-name">Allan</p>
+              <p class="tm-role">Traveler</p>
+            </div>
+          </div>
+          <p>“Asuransi yang baik saja tidak cukup mempermudah kita dalam melakukan klaim saat musibah. Paul melengkapinya dengan membantu pengurusan administrasi sehingga kita fokus pada pemulihan, sementara beliau sigap memberi informasi yang diperlukan.”</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ELITE TEAM ===== -->
+  <section class="team" id="team">
+    <div class="container">
+      <h2 class="section-title fade-in">Elite Team</h2>
+      <p class="section-sub fade-in"></p>
+
+      <div class="team-grid">
+        <div class="member fade-in">
+          <img src="ELT1.avif" alt="Quinta Meigy">
+          <div class="member-body">
+            <p class="member-name">Lay Susanna Dewi, RFP, AWP</p>
+            <p class="member-role">Wealth Preservation Specialist・Asset Allocation Specialist・Money Management Specialist・Million Dollar Round Table Member・Lions Pride Member・Lions Elite Circle Member・Lions Gold Member・Maestro Centurion</p>
+          </div>
+        </div>
+        <div class="member fade-in">
+          <img src="ELT2.avif" alt="Rafida Purba">
+          <div class="member-body">
+            <p class="member-name">Iwan Setiawan, AWP</p>
+            <p class="member-role">Investment Specialist</p>
+          </div>
+        </div>
+        <div class="member fade-in">
+          <img src="ELT3.avif" alt="Mona Selviana West">
+          <div class="member-body">
+            <p class="member-name">Yimmy Sutjipto, ST, AWP</p>
+            <p class="member-role">Money Management Specialist・Lions Bronze Member</p>
+          </div>
+        </div>
+        <div class="member fade-in">
+          <img src="ELT4.avif" alt="Member 4">
+          <div class="member-body">
+            <p class="member-name">Quinta Meigy, AWP</p>
+            <p class="member-role">Money Management Specialist</p>
+          </div>
+        </div>
+        <div class="member fade-in">
+          <img src="ELT5.avif" alt="Member 5">
+          <div class="member-body">
+            <p class="member-name">Rafida Purba, SE</p>
+            <p class="member-role">Investment Specialist</p>
+          </div>
+        </div>
+        <div class="member fade-in">
+          <img src="ELT6.avif" alt="Member 6">
+          <div class="member-body">
+            <p class="member-name">Mona Selviana West, S.AB, CHt</p>
+            <p class="member-role">Money Management Specialist・Saving Specialist・Hypno Therapist</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AWARDS (Gallery) ===== -->
+  <section class="awards" id="awards">
+    <div class="container">
+      <h2 class="section-title fade-in">Penghargaan</h2>
+      
+
+      <div class="grid-awards">
+        <!-- 12 gambar -->
+        <img src="PGHG1.avif" alt="">
+        <img src="PGHG2.avif" alt="">
+        <img src="PGHG3.avif" alt="">
+        <img src="PGHG4.avif" alt="">
+        <img src="PGHG5.avif" alt="">
+        <img src="PGHG6.avif" alt="">
+        <img src="PGHG7.avif" alt="">
+        <img src="PGHG8.avif" alt="">
+        <img src="PGHG9.avif" alt="">
+        <img src="PGHG10.avif" alt="">
+        <img src="PGHG11.avif" alt="">
+        <img src="PGHG12.avif" alt="">
+        <img src="PGHG13.avif" alt="">
+        <img src="PGHG14.avif" alt="">
+        <img src="PGHG15.avif" alt="">
+        <img src="PGHG16.avif" alt="">
+        <img src="PGHG17.avif" alt="">
+        <img src="PGHG18.avif" alt="">
+        <img src="PGHG19.avif" alt="">
+        <img src="PGHG20.avif" alt="">
+        <img src="PGHG21.avif" alt="">
+        <img src="PGHG22.avif" alt="">
+        <img src="PGHG23.avif" alt="">
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section-title fade-in">Apa yang bisa saya bantu?</h2>
+      <p class="section-sub fade-in">Business • Financial • Insurance • Wealth Planning</p>
+
+      <div class="svc-grid">
+        <!-- Wealth Protection -->
+        <article class="svc fade-in">
+          <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80" alt="Wealth Protection">
+          <div class="svc-body">
+            <h3>Wealth Accumulation(Melipatgandakan Kekayaan)</h3>
+            <p>Sebagai seorang profesional dan pemilik bisnis, Anda sudah sangat hebat dalam mengakumulasikan kekayaan. Namun faktor keamanan dalam berinvestasi sangat penting.</p>
+            <p>Jika Anda ingin berdiskusi dengan saya untuk mendapatkan investasi jangka pendek (1 bulan - 6 bulan), jangka menengah (1 tahun - 5 tahun) dan jangka panjang (5 tahun ke atas) dengan suku bunga yang kompetitif dan dilindungi oleh OJK (Otoritas Jasa Keuangan).</p>
+            <a class="btn" href="#https://wa.me/">Let's Discuss With Me</a>
+          </div>
+        </article>
+
+        <!-- Wealth Accumulation -->
+        <article class="svc fade-in">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80" alt="Wealth Accumulation">
+          <div class="svc-body">
+            <h3>Wealth DISTRIBUTION(MeMBAGI Kekayaan)</h3>
+            <p>Anda sudah mencapai di level dimana kekayaan Anda sudah bertumbuh dengan sangat baik.</p>
+            <p>Akan tetapi Anda membutuhkan strategi agar kekayaan Anda tetap dapat Anda nikmati di masa pensiun dan membaginya secara aman tanpa mengurangi kekayaan Anda pada generasi selanjutnya.</p>
+            <a class="btn" href="#https://wa.me/">Let's Discuss With Me</a>
+          </div>
+        </article>
+
+        <!-- Wealth Distribution -->
+        <article class="svc fade-in">
+          <img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80" alt="Wealth Distribution">
+          <div class="svc-body">
+            <h3>WEALTH PROTECTION(Melindungi Kekayaan)</h3>
+            <p>Fundamental yang paling utama dalam financial growth adalah melindungi kekayaan.</p>
+            <p>Kekayaan Anda harus tetap aman dari bencana alam, pemborosan, kecerobohan, ketamakan, sakit, kematian, kecelakaan dan lain lain.</p>
+            <a class="btn" href="#https://wa.me/">Let's Discuss With Me</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    © <span id="y"></span> Paul Stevefanus. All rights reserved.
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Navbar Dynamic Island behavior (tidak merusak animasi)
+    const navbar = document.getElementById('navbar');
+    const menuItems = document.querySelectorAll('.navbar-menu span');
+    let isCircle = true;
+
+    window.addEventListener('load', () => {
+      navbar.style.animation = 'bounceDown 1.8s ease';
+      setTimeout(() => { navbar.classList.remove('circle'); isCircle = false; }, 2000);
+      // initial reveal
+      revealOnScroll();
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50 && !isCircle){ navbar.classList.add('circle'); isCircle = true; }
+      else if (window.scrollY <= 50 && isCircle){ navbar.classList.remove('circle'); isCircle = false; }
+      revealOnScroll();
+      setActiveByScroll();
+    }, { passive:true });
+
+    navbar.addEventListener('click', () => { if (isCircle){ navbar.classList.remove('circle'); isCircle = false; } });
+
+    // Smooth scroll + active
+    menuItems.forEach(item=>{
+      item.addEventListener('click', (e)=>{
+        menuItems.forEach(i=>i.classList.remove('active'));
+        e.target.classList.add('active');
+        const el = document.getElementById(e.target.dataset.target);
+        if (el) el.scrollIntoView({behavior:'smooth'});
+      })
+    });
+
+    // Parallax multi-layer (Hero)
+    (function(){
+      const hero = document.querySelector('.hero');
+      const layers = hero.querySelectorAll('.hero__layer');
+      function parallax(){
+        const rect = hero.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const inView = rect.top < vh && rect.bottom > 0;
+        if(!inView) return;
+        const progress = (vh - rect.top) / (vh + rect.height);
+        layers.forEach(el=>{
+          const d = parseFloat(el.getAttribute('data-depth')||0);
+          const move = (progress * 60) * d;
+          el.style.transform = `translate3d(0, ${move}px, 0) ${el.classList.contains('hero__bg') ? 'scale(1.1)' : ''}`;
+        });
+      }
+      let ticking=false;
+      function onScroll(){
+        if(!ticking){
+          requestAnimationFrame(()=>{ parallax(); ticking=false; });
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive:true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', onScroll);
+    })();
+
+    // Popup Vision/Mission/Core Values
+    function openPopup(){ document.getElementById('popup').style.display = 'flex'; }
+    function closePopup(){ document.getElementById('popup').style.display = 'none'; }
+    window.openPopup = openPopup; window.closePopup = closePopup;
+
+    // Reveal on scroll (fade-in)
+    function revealOnScroll(){
+      document.querySelectorAll('.fade-in, .tm, .svc').forEach(el=>{
+        const r = el.getBoundingClientRect();
+        if (r.top < (window.innerHeight - 100)) el.classList.add('visible');
+      });
+    }
+
+    // Active state by scroll
+    const sections = ['home','about','services','team','awards','contact'].map(id => document.getElementById(id));
+    function setActiveByScroll(){
+      const y = window.scrollY + 130; // offset navbar
+      let current = 'home';
+      sections.forEach(sec=>{
+        if (!sec) return;
+        if (y >= sec.offsetTop) current = sec.id;
+      });
+      menuItems.forEach(i=>{
+        i.classList.toggle('active', i.dataset.target === current);
+      });
+    }
+    // Preloader hide setelah 2.5 detik
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('preloader').classList.add('hide');
+    }, 2500);
+});
+// === LIGHTBOX UNTUK AWARD GALLERY ===
+(function(){
+  const thumbs = Array.from(document.querySelectorAll('.grid-awards img'));
+  if (!thumbs.length) return;
+
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const btnClose = document.getElementById('lightbox-close');
+  const btnPrev = document.getElementById('lightbox-prev');
+  const btnNext = document.getElementById('lightbox-next');
+  let idx = 0;
+
+  function open(i){
+    idx = i;
+    lbImg.src = thumbs[idx].getAttribute('src');
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden','false');
+  }
+  function close(){
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden','true');
+    lbImg.removeAttribute('src');
+  }
+  function prev(){ open((idx - 1 + thumbs.length) % thumbs.length) }
+  function next(){ open((idx + 1) % thumbs.length) }
+
+  thumbs.forEach((img,i)=>{
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', ()=> open(i));
+  });
+
+  btnClose.addEventListener('click', close);
+  btnPrev.addEventListener('click', prev);
+  btnNext.addEventListener('click', next);
+
+  lb.addEventListener('click', (e)=>{ if(e.target === lb) close(); });
+
+  document.addEventListener('keydown', (e)=>{
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') close();
+    if(e.key === 'ArrowLeft') prev();
+    if(e.key === 'ArrowRight') next();
+  });
+})();
+
+  </script>
+<!-- LIGHTBOX UNTUK AWARD GALLERY -->
+<div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-hidden="true">
+  <div class="lightbox__imgwrap">
+    <img id="lightbox-img" class="lightbox__img" alt="Award full view">
+    <button class="lightbox__close" id="lightbox-close" aria-label="Close">✕</button>
+    <button class="lightbox__nav lightbox__prev" id="lightbox-prev" aria-label="Previous">‹</button>
+    <button class="lightbox__nav lightbox__next" id="lightbox-next" aria-label="Next">›</button>
+  </div>
+</div>
+
+</body>
+</html>
